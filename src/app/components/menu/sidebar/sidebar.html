@@ -1,0 +1,55 @@
+
+@if(authService.isAuthenticated()) {
+    <mat-sidenav-container class="sidebar-shell">
+        <mat-sidenav #sidenav mode="over" (backdropClick)="bdclick(sidenav)">
+            <mat-nav-list (click)="sidenav.close()">
+                @for(item of menuItems; track item.label) {
+                    @if(!item.roles || item.roles.includes(authService.role())) {
+                        @if(!item.children) {
+                            <a mat-list-item 
+                                [routerLink]="[item.route]"
+                                routerLinkActive="active-link">
+                                
+                                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                                <span matListItemTitle>{{ item.label }}</span>
+                                
+                            </a>
+                        } @else {
+                            <div>
+                                <a mat-list-item class="parent-item">
+                                    <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                                    <span matListItemTitle>{{ item.label }}</span>
+                                </a>
+                                <mat-nav-list class="submenu">
+                                    @for(child of item.children; track child.label) {
+                                        @if(!child.roles || child.roles.includes(authService.role())) {
+                                            <a mat-list-item 
+                                                [routerLink]="[child.route]"
+                                                routerLinkActive="active-link"
+                                                class="child-item">
+                                                
+                                                <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
+                                                <span matListItemTitle>{{ child.label }}</span>
+                                                
+                                            </a>
+                                        }
+                                    }
+                                </mat-nav-list>
+                            </div>
+                        }
+                    }
+                }
+            </mat-nav-list>
+        </mat-sidenav>
+
+        <mat-sidenav-content>
+            <app-toolbar [menuItems]="menuItems" (menuToggle)="sidenav.open()"></app-toolbar>
+
+            <div class="page-content">
+                <router-outlet></router-outlet>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+} @else {
+    <router-outlet></router-outlet>
+}

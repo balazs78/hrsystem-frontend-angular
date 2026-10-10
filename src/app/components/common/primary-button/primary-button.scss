@@ -1,0 +1,17 @@
+:host {
+  display: inline-block;
+}
+
+:host(.full-width) {
+  display: block;
+}
+
+:host(.full-width) > button {
+  width: 100%;
+}
+
+:host(.login-btn) > button {
+  padding: 1.5rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}

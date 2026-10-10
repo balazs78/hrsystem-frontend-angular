@@ -1,0 +1,18 @@
+mat-drawer-container {
+  min-height: 100vh;
+}
+
+mat-drawer {
+  height: 100%;
+}
+
+.employee-drawer {
+  width: 500px;
+  max-width: 100vw;
+}
+
+@media (max-width: 600px) {
+  .employee-drawer {
+    width: 100vw;
+  }
+}

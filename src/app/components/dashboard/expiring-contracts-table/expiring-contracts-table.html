@@ -1,0 +1,27 @@
+<mat-card class="table-card">
+    <app-responsive-table>
+        <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="fullName">
+                <th mat-header-cell *matHeaderCellDef>Contractor name</th>
+                <td mat-cell *matCellDef="let employee">{{ employee.fullName }}</td>
+            </ng-container>
+            <ng-container matColumnDef="contractExpireDate">
+                <th mat-header-cell *matHeaderCellDef>Contract Expiry Date</th>
+                <td mat-cell *matCellDef="let employee">{{ employee.contractExpireDate }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let employee; columns: displayedColumns"></tr>
+            <tr *matNoDataRow>
+                <td class="mat-cell" [attr.colspan]="displayedColumns.length">No expiring contracts</td>
+            </tr>
+        </table>
+    </app-responsive-table>
+
+    <mat-paginator
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true"
+        aria-label="Select page of expiring contracts">
+    </mat-paginator>
+</mat-card>

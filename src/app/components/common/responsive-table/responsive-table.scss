@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+:host ::ng-deep table {
+  width: 100%;
+  min-width: var(--responsive-table-min-width, 900px);
+}

@@ -1,0 +1,112 @@
+@if (employee) {
+<div class="drawer-container">
+  
+  <!-- HEADER -->
+  <div class="drawer-header">
+    <div class="header-title">
+      <h2>Employee Profile</h2>
+      <span class="employee-id">ID: #{{ employee.id }}</span>
+    </div>
+    <button mat-icon-button type="button" class="header-close-button" (click)="cancel.emit()" aria-label="Close employee profile">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+    
+    <!-- SECTION: AVATAR (Non-interactive) -->
+    <div class="avatar-section">
+      <div class="avatar-wrapper readonly">
+        <img class="avatar-image" [src]="employee.profileImage || 'images/default_avatar.jpg'" alt="Avatar">
+      </div>
+      <h2 class="display-name">{{ employee.firstName }} {{ employee.lastName }}</h2>
+      <p class="display-role">{{ employee.position.title }}</p>
+    </div>
+
+    <mat-divider></mat-divider>
+    
+    <!-- PERSONAL INFORMATION -->
+    <h3 class="section-title">Personal Information</h3>
+    <div class="form-grid">
+      
+      <div class="view-field">
+        <label>First Name</label>
+        <span>{{ employee.firstName }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Last Name</label>
+        <span>{{ employee.lastName || '-' }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Gender</label>
+        <span>{{ employee.gender | titlecase }}</span>
+      </div>
+
+      <div class="view-field full-width">
+        <label>Email Address</label>
+        <span class="email-link"><mat-icon>email</mat-icon> {{ employee.email }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Phone</label>
+        <span>{{ employee.phone || 'Not provided' }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Date of Birth</label>
+        <span>{{ employee.birthdate | date:'longDate' }}</span>
+      </div>
+
+      <div class="view-field full-width">
+        <label>Home Address</label>
+        <span class="multiline">{{ employee.address || 'No address on file' }}</span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- EMPLOYMENT DETAILS -->
+    <h3 class="section-title">Employment Details</h3>
+    <div class="form-grid">
+      
+      <div class="view-field">
+        <label>Department</label>
+        <span>{{ employee.department.name }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Position</label>
+        <span>{{ employee.position.title }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Reporting Manager</label>
+        <span>{{ employee.manager?.fullName || 'No Manager Assigned' }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Status</label>
+        <span>{{ employee.status | titlecase | replaceUnderscore }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Hire Date</label>
+        <span>{{ employee.hiredAt | date:'mediumDate' }}</span>
+      </div>
+
+      <div class="view-field">
+        <label>Contract End Date</label>
+        <span>{{ (employee.contractEndDate | date:'mediumDate') || 'Permanent' }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER ACTIONS -->
+  <div class="drawer-actions">
+    <button mat-button type="button" (click)="cancel.emit()">Close</button>
+  </div>
+</div>
+}

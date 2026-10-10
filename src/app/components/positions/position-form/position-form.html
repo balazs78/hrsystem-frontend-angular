@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>
+  {{ data ? 'Edit' : 'Create' }} Position
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="positionsForm" class="form-container">
+    
+    <!-- 1. Name Field -->
+    <mat-form-field appearance="outline">
+      <mat-label>Position Title</mat-label>
+      <input matInput formControlName="title" placeholder="e.g. Backend Engineer">
+      @if(positionsForm.get('title')?.hasError('required')) {
+        <mat-error>
+          Title is required
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- 2. Cost Center Field (With Hint and Regex Error) -->
+    <mat-form-field appearance="outline">
+      <mat-label>Salary Grade</mat-label>
+      <input matInput 
+             formControlName="salaryGrade" 
+             placeholder="Salary grade">
+      @if(positionsForm.get('salaryGrade')?.hasError('required')) {
+        <mat-error>
+          Salary grade is required
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- 3. Description Field (Optional) -->
+    <mat-form-field appearance="outline">
+      <mat-label>Position Description</mat-label>
+      <textarea matInput formControlName="description" placeholder="Optional description about the position"></textarea>   
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <app-primary-button (click)="savePosition()" [disabled]="positionsForm.invalid">
+    {{ data ? 'Update' : 'Create' }}
+  </app-primary-button>
+</mat-dialog-actions>

@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Position Details</h2>
+
+<mat-dialog-content class="view-container">
+  <div class="readonly-container">
+    <!-- 1. Title Section -->
+    <div class="detail-group">
+      <label class="detail-label">Position Title</label>
+      <div class="detail-value">{{ data.title }}</div>
+    </div>
+
+    <!-- 2. Salary Grade Section -->
+    <div class="detail-group">
+      <label class="detail-label">Salary Grade</label>
+      <div class="detail-value">
+          <span class="grade-badge">{{ data.salaryGrade }}</span>
+      </div>
+    </div>
+
+    <!-- 3. Headcount Section -->
+    <div class="detail-group">
+      <label class="detail-label">Headcount</label>
+      <div class="detail-value">
+          {{ data.headcount }}
+      </div>
+    </div>
+
+    <!-- 4. Description Section -->
+    <div class="detail-group">
+      <label class="detail-label">Description</label>
+      <div class="detail-value description-text">
+        {{ data.description || 'No description provided.' }}
+      </div>
+    </div>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <app-primary-button mat-dialog-close>Close</app-primary-button>
+</mat-dialog-actions>

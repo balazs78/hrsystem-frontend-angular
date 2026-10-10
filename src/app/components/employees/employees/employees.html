@@ -1,0 +1,36 @@
+<mat-drawer-container autosize>
+  
+  <!-- The Drawer -->
+  <mat-drawer #drawer class="employee-drawer" position="end" mode="over" (closedStart)="saveFormDraft()" (openedStart)="restoreFormDraft()">
+    <!-- WE USE OUR COMPONENT HERE -->
+    @if(isDrawerOpen) {
+      @if(drawerContents == 'form') {
+        <app-employee-form 
+          [employeeData]="selectedEmployee"
+          (save)="onSaveEmployee($event)"
+          (cancel)="drawer.close()">
+        </app-employee-form>
+      }
+      @else if (selectedEmployee) {
+        <app-employee-view 
+          [employee]="selectedEmployee"
+          (cancel)="drawer.close()">
+        </app-employee-view>
+      }
+    }
+  </mat-drawer>
+
+  <!-- Main Content -->
+  <mat-drawer-content>
+     <!-- Your Data Grid here -->
+      
+     <app-employee-table 
+      (viewEmployeeClicked)="viewEmployee($event)"
+      (editEmployeeClicked)="editEmployee($event)"
+      (deleteEmployeeClicked)="deleteEmployee($event)"
+      (createEmployeeClicked)="openCreate()">
+     </app-employee-table>
+  </mat-drawer-content>
+
+</mat-drawer-container>
+

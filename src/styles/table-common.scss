@@ -1,0 +1,39 @@
+$table-surface: #faf9fd;
+$table-border: rgba(15, 23, 42, 0.04);
+
+@mixin table-card {
+  margin: 16px;
+  background: $table-surface;
+  box-shadow: none;
+  border: 1px solid $table-border;
+}
+
+@mixin table-panel {
+  background: $table-surface;
+}
+
+@mixin table-row-hover {
+  background-color: rgba(250, 249, 253, 0.85);
+}
+
+@mixin table-shell {
+  mat-card {
+    @include table-card;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  app-responsive-table {
+    display: block;
+    background: $table-surface;
+  }
+
+  table {
+    width: 100%;
+    background: $table-surface;
+  }
+
+  .mat-mdc-row:hover {
+    @include table-row-hover;
+  }
+}

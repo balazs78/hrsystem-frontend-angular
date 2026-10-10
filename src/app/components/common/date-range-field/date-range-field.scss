@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+mat-form-field {
+  width: 300px;
+}
+
+:host ::ng-deep .mdc-line-ripple {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  mat-form-field {
+    width: 100%;
+  }
+}

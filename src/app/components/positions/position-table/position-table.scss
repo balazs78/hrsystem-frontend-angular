@@ -1,0 +1,8 @@
+@use '../../../../styles/table-common' as table;
+
+@include table.table-shell;
+
+.mat-column-headcount {
+  text-align: center;
+}
+

@@ -1,0 +1,169 @@
+<div class="drawer-container">
+  
+  <!-- HEADER -->
+  <div class="drawer-header">
+    <h2>{{ employeeData ? 'Edit' : 'New' }} Employee</h2>
+    <button mat-icon-button (click)="cancel.emit()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- SCROLLABLE FORM BODY -->
+  <div class="drawer-body">
+    <form [formGroup]="employeeForm">
+
+      <!-- SECTION: AVATAR -->
+      <div class="avatar-section">
+        <div class="avatar-wrapper" (click)="openImageOverlay()" role="button" tabindex="0">
+          <img [src]="avatarPreview || 'images/default_avatar.jpg'" alt="Avatar">
+          <div class="overlay">
+            <mat-icon>visibility</mat-icon>
+          </div>
+        </div>
+        <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*">
+        <button type="button" class="hint-text" (click)="fileInput.click()">
+          Click to upload photo
+        </button>
+      </div>
+      @if (showImageOverlay) {
+        <div class="image-lightbox" (click)="closeImageOverlay()">
+          <img [src]="avatarPreview || 'images/default_avatar.jpg'" alt="Full size avatar preview">
+        </div>
+      }
+
+      <mat-divider></mat-divider>
+      <h3 class="section-title">Personal Information</h3>
+
+      <div class="form-grid">
+        <!-- First Name -->
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName">
+          @if (employeeForm.get('firstName')?.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Last Name -->
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName">
+        </mat-form-field>
+
+        <!-- Gender -->
+        <mat-form-field appearance="outline">
+          <mat-label>Gender</mat-label>
+          <mat-select formControlName="gender">
+            @for (gender of genderOptions; track gender) {
+              <mat-option [value]="gender">
+                {{ gender | titlecase }}
+              </mat-option>
+            }
+          </mat-select>
+          @if (employeeForm.get('gender')?.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email">
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+
+        <!-- Phone -->
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone">
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+
+        <!-- Birthdate -->
+        <mat-form-field appearance="outline">
+          <mat-label>Date of Birth</mat-label>
+          <input matInput [matDatepicker]="pickerBirth" formControlName="birthdate">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+          <mat-datepicker #pickerBirth></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Address (Full Width) -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Home Address</mat-label>
+          <textarea matInput formControlName="address" rows="2"></textarea>
+        </mat-form-field>
+      </div>
+
+      <mat-divider></mat-divider>
+      <h3 class="section-title">Employment Details</h3>
+
+      <div class="form-grid">
+        <!-- Department -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Department</mat-label>
+          <mat-select formControlName="departmentId">
+            @for(dept of departments$ | async; track dept.id) { 
+            <mat-option [value]="dept.id">
+              {{ dept.name }}
+            </mat-option>
+          }
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Position -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Position</mat-label>
+          <mat-select formControlName="positionId">
+            @for(pos of positions$ | async; track pos.id) { 
+            <mat-option [value]="pos.id">
+              {{ pos.title }}
+            </mat-option>
+          }
+          </mat-select>
+        </mat-form-field>
+
+
+        <!-- REUSABLE EMPLOYEE AUTOCOMPLETE COMPONENT -->
+        <app-employee-autocomplete label="Assign Manager" formControlName="managerId"></app-employee-autocomplete>
+
+
+        <!-- Status -->
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            @for (s of statusOptions; track s) {
+              <mat-option [value]="s">
+                {{ s | titlecase | replaceUnderscore }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Hired At -->
+        <mat-form-field appearance="outline">
+          <mat-label>Hire Date</mat-label>
+          <input matInput [matDatepicker]="pickerHired" formControlName="hiredAt">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerHired"></mat-datepicker-toggle>
+          <mat-datepicker #pickerHired></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Contract End (Nullable) -->
+        <mat-form-field appearance="outline">
+          <mat-label>Contract End</mat-label>
+          <input matInput [matDatepicker]="pickerEnd" formControlName="contractEndDate">
+          <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+          <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- FOOTER ACTIONS -->
+  <div class="drawer-actions">
+    <button mat-button (click)="cancel.emit()">Cancel</button>
+    <app-primary-button (click)="onSubmit()" [disabled]="employeeForm.invalid">
+      Save Employee
+    </app-primary-button>
+  </div>
+</div>

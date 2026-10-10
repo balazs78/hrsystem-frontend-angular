@@ -1,0 +1,10 @@
+<mat-form-field class="multi-select-filter">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select multiple [formControl]="control">
+    <app-select-all [values]="values"></app-select-all>
+    <mat-select-trigger>{{ selectedLabel }}</mat-select-trigger>
+    @for (option of values; track getOptionValue(option)) {
+      <mat-option [value]="getOptionValue(option)">{{ optionText(option) }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>

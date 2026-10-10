@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+mat-toolbar {
+  background-color: var(--toolbar-background);
+  color: var(--toolbar-foreground);
+}
+
+.toolbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.toolbar-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.toolbar-menu-item {
+  flex-shrink: 0;
+  color: inherit !important;
+}
+
+.toolbar-icon-button,
+.toolbar-icon-button mat-icon {
+  color: var(--toolbar-foreground);
+}
+
+.toolbar-menu-item.active-link {
+  background-color: color-mix(in srgb, var(--mat-sys-on-primary) 16%, transparent);
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+::ng-deep .mat-mdc-menu-panel .mat-mdc-menu-item mat-icon {
+  color: var(--mat-sys-primary);
+}

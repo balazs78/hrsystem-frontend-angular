@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+}
+
+.table-card {
+  --responsive-table-min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mat-mdc-table {
+  table-layout: fixed;
+}
+
+.mat-mdc-paginator {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  margin-top: 0;
+}

@@ -1,0 +1,32 @@
+.sidebar-shell,
+.sidebar-shell .mat-sidenav-content {
+  min-height: 100vh;
+  height: 100%;
+}
+
+.sidebar-shell .mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.submenu {
+  padding-left: 16px;
+  
+  .child-item {
+    padding-left: 16px;
+    font-size: 14px;
+    
+    ::ng-deep .mat-list-item-title {
+      font-weight: 400;
+    }
+  }
+}
+
+.parent-item {
+  font-weight: 500;
+}

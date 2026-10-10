@@ -1,0 +1,50 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="toolbar-icon-button" (click)="menuToggle.emit()" aria-label="Open navigation" matTooltip="Open navigation">
+        <mat-icon>menu</mat-icon>
+    </button>
+
+    <nav class="toolbar-menu" aria-label="Main navigation">
+        @for(item of menuItems(); track item.label) {
+            @if(!item.roles || item.roles.includes(authService.role())) {
+                @if(!item.children) {
+                    <a mat-icon-button
+                        [routerLink]="[item.route]"
+                        routerLinkActive="active-link"
+                        [attr.aria-label]="item.label"
+                        [matTooltip]="item.label"
+                        class="toolbar-menu-item">
+                        <mat-icon>{{ item.icon }}</mat-icon>
+                    </a>
+                } @else {
+                    @for(child of item.children; track child.label) {
+                        @if(!child.roles || child.roles.includes(authService.role())) {
+                            <a mat-icon-button
+                                [routerLink]="[child.route]"
+                                routerLinkActive="active-link"
+                                [attr.aria-label]="child.label"
+                                [matTooltip]="child.label"
+                                class="toolbar-menu-item">
+                                <mat-icon>{{ child.icon }}</mat-icon>
+                            </a>
+                        }
+                    }
+                }
+            }
+        }
+    </nav>
+
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button class="toolbar-icon-button" [matMenuTriggerFor]="dropdown" aria-label="Profile" matTooltip="Profile">
+        <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #dropdown panelClass="profile-menu">
+        <button mat-menu-item routerLink="/profile-settings">
+            <mat-icon>manage_accounts</mat-icon>
+            <span>Profile settings</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+        </button>
+    </mat-menu>
+</mat-toolbar>

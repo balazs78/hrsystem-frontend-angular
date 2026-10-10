@@ -1,0 +1,27 @@
+ <h2 mat-dialog-title>Department Details</h2>
+
+<mat-dialog-content class="view-container">
+    <div class="readonly-container">
+        <div class="info-group">
+        <label>Department Name</label>
+        <div class="value">{{ data.name }}</div>
+        </div>
+
+        <div class="info-group">
+        <label>Cost Center Code</label>
+        <div class="value">
+            <span class="code-badge">{{ data.costCenterCode }}</span>
+        </div>
+        </div>
+
+        <div class="info-group">
+        <label>Assigned Manager</label>
+        <div class="value">
+            {{ data.manager?.fullName || 'No manager assigned' }}
+        </div>
+        </div>
+    </div>
+</mat-dialog-content>
+ <mat-dialog-actions align="end">
+    <app-primary-button mat-dialog-close>Close</app-primary-button>
+</mat-dialog-actions>
