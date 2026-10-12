@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: '/api',
+    apiUrl: 'https://hrsystem-backend-pjxe.onrender.com',
     webUrl: '',
     appName: 'HR System',
     defaultPageSize: 15
