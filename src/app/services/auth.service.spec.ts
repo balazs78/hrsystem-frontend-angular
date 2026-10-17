@@ -6,14 +6,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { environment } from '../../environments/environment';
 import { LoginData } from '../models/login-data.interface';
+import { LoginResponse } from '../models/login-response.interface';
 import { PasswordChangeData, PasswordChangeResponse } from '../models/user.dto';
 import { User } from '../models/user.interface';
 import { AuthService } from './auth.service';
+import { AuthTokenService } from './auth-token.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let router: Router;
   let backend: RecordingBackend;
+  let tokenService: AuthTokenService;
   let injector: Injector;
 
   const buildUser = (overrides: Partial<User> = {}): User => ({
@@ -30,71 +33,106 @@ describe('AuthService', () => {
   });
 
   beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
     backend = new RecordingBackend(() => ({}));
     router = { navigate: vi.fn() } as unknown as Router;
     injector = Injector.create({
       providers: [
         { provide: HttpClient, useValue: new HttpClient(backend) },
-        { provide: Router, useValue: router }
+        { provide: Router, useValue: router },
+        AuthTokenService
       ]
     });
+    tokenService = injector.get(AuthTokenService);
     service = runInInjectionContext(injector, () => new AuthService());
-    vi.stubGlobal('document', { cookie: 'XSRF-TOKEN=csrf-token' });
   });
 
   afterEach(() => {
-    vi.unstubAllGlobals();
+    localStorage.clear();
+    sessionStorage.clear();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should initialize auth state from the current user endpoint', async () => {
+  it('should initialize auth state from the current user endpoint using the stored token', async () => {
     const user = buildUser();
+    tokenService.setToken('saved-token', false);
     backend.respond = () => user;
 
-    const initializePromise = service.initialize();
-    await initializePromise;
+    await service.initialize();
 
     expect(backend.requests).toHaveLength(1);
     expect(backend.requests[0].method).toBe('GET');
     expect(backend.requests[0].url).toBe(`${environment.apiUrl}/user`);
-    expect(backend.requests[0].withCredentials).toBe(true);
+    expect(backend.requests[0].withCredentials).toBe(false);
     expect(service.currentUser()).toEqual(user);
     expect(service.isAuthenticated()).toBe(true);
     expect(service.role()).toBe('Admin');
     expect(service.isAdmin()).toBe(true);
   });
 
-  it('should login and hydrate auth state from the user endpoint', () => {
+  it('should skip user hydration when no token is stored', async () => {
+    await service.initialize();
+
+    expect(backend.requests).toHaveLength(0);
+    expect(service.isAuthenticated()).toBe(false);
+  });
+
+  it('should clear an invalid token when user hydration fails', async () => {
+    tokenService.setToken('expired-token', true);
+    backend.respond = () => {
+      throw new Error('Unauthorized');
+    };
+
+    await service.initialize();
+
+    expect(tokenService.getToken()).toBeNull();
+    expect(service.isAuthenticated()).toBe(false);
+  });
+
+  it('should login from the token and user returned by the login endpoint', () => {
     const user = buildUser();
     const credentials: LoginData = {
       email: 'jane@example.com',
       password: 'secret',
       remember: true
     };
-    backend.respond = request => request.url.endsWith('/user') ? user : {};
+    const loginResponse: LoginResponse = {
+      token: 'plain-text-token',
+      token_type: 'Bearer',
+      user
+    };
+    backend.respond = () => loginResponse;
     let response: User | undefined;
 
     service.login(credentials).subscribe(userResponse => {
       response = userResponse;
     });
 
-    expect(backend.requests.map(request => [request.method, request.url])).toEqual([
-      ['GET', `${environment.webUrl}/sanctum/csrf-cookie`],
-      ['POST', `${environment.webUrl}/login`],
-      ['GET', `${environment.apiUrl}/user`]
-    ]);
-    expect(backend.requests[1].body).toEqual(credentials);
-    expect(backend.requests[1].headers.get('X-XSRF-TOKEN')).toBe('csrf-token');
-    expect(backend.requests[1].withCredentials).toBe(true);
-
+    expect(backend.requests).toHaveLength(1);
+    expect(backend.requests[0].method).toBe('POST');
+    expect(backend.requests[0].url).toBe(`${environment.webUrl}/login`);
+    expect(backend.requests[0].body).toEqual(credentials);
+    expect(backend.requests[0].withCredentials).toBe(false);
     expect(response).toEqual(user);
+    expect(tokenService.getToken()).toBe('plain-text-token');
+    expect(localStorage.getItem('auth_token')).toBe('plain-text-token');
+    expect(sessionStorage.getItem('auth_token')).toBeNull();
     expect(service.currentUser()).toEqual(user);
     expect(service.isAuthenticated()).toBe(true);
     expect(service.role()).toBe('Admin');
     expect(service.isAdmin()).toBe(true);
+  });
+
+  it('should keep a non-remembered token in session storage only', () => {
+    tokenService.setToken('temporary-token', false);
+
+    expect(tokenService.getToken()).toBe('temporary-token');
+    expect(localStorage.getItem('auth_token')).toBeNull();
+    expect(sessionStorage.getItem('auth_token')).toBe('temporary-token');
   });
 
   it('should send a forgot password request', () => {
@@ -106,34 +144,28 @@ describe('AuthService', () => {
     expect(backend.requests[0].body).toEqual({ email: 'jane@example.com' });
   });
 
-  it('should send a password change request with the CSRF token', () => {
+  it('should send a password change request without CSRF cookie setup', () => {
     const payload: PasswordChangeData = {
       current_password: 'current-password',
       password: 'new-password',
       password_confirmation: 'new-password'
     };
-    backend.respond = request => request.url.endsWith('/force-password-update')
-      ? { user: buildUser() }
-      : {};
+    backend.respond = () => ({ user: buildUser() });
     let response: PasswordChangeResponse | undefined;
 
     service.changePassword(payload).subscribe(changeResponse => {
       response = changeResponse;
     });
 
-    const changeResponse: PasswordChangeResponse = { user: buildUser() };
-    expect(backend.requests.map(request => [request.method, request.url])).toEqual([
-      ['GET', `${environment.webUrl}/sanctum/csrf-cookie`],
-      ['POST', `${environment.webUrl}/force-password-update`]
-    ]);
-    expect(backend.requests[1].headers.get('X-XSRF-TOKEN')).toBe('csrf-token');
-    expect(backend.requests[1].body).toEqual(payload);
-    expect(backend.requests[1].withCredentials).toBe(true);
-
-    expect(response).toEqual(changeResponse);
+    expect(backend.requests).toHaveLength(1);
+    expect(backend.requests[0].method).toBe('POST');
+    expect(backend.requests[0].url).toBe(`${environment.webUrl}/force-password-update`);
+    expect(backend.requests[0].body).toEqual(payload);
+    expect(response).toEqual({ user: buildUser() });
   });
 
-  it('should clear auth state and navigate to login on logout', () => {
+  it('should clear the token and auth state and navigate to login on logout', () => {
+    tokenService.setToken('active-token', true);
     const user = buildUser();
     backend.respond = () => ({});
     const navigateSpy = vi.spyOn(router, 'navigate');
@@ -146,19 +178,17 @@ describe('AuthService', () => {
 
     service.logout().subscribe();
 
-    expect(backend.requests.map(request => [request.method, request.url])).toEqual([
-      ['GET', `${environment.webUrl}/sanctum/csrf-cookie`],
-      ['POST', `${environment.webUrl}/logout`]
-    ]);
-    expect(backend.requests[1].headers.get('X-XSRF-TOKEN')).toBe('csrf-token');
-    expect(backend.requests[1].body).toEqual({});
-    expect(backend.requests[1].withCredentials).toBe(true);
-
+    expect(backend.requests).toHaveLength(1);
+    expect(backend.requests[0].method).toBe('POST');
+    expect(backend.requests[0].url).toBe(`${environment.webUrl}/logout`);
+    expect(backend.requests[0].body).toEqual({});
+    expect(backend.requests[0].withCredentials).toBe(false);
+    expect(tokenService.getToken()).toBeNull();
     expect(service.currentUser()).toBeNull();
     expect(service.isAuthenticated()).toBe(false);
     expect(service.isAdmin()).toBe(false);
     expect(service.passwordHasChanged()).toBe(false);
-    expect(service.role()).toBe('Admin');
+    expect(service.role()).toBe('Manager');
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 });
