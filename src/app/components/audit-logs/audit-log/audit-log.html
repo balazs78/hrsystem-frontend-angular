@@ -1,0 +1,47 @@
+<h1>Audit Logs</h1>
+<mat-card>
+<app-table-toolbar>
+  <mat-form-field class="audit-filter" appearance="fill">
+    <mat-label>Period</mat-label>
+    <mat-select [value]="period()" (selectionChange)="onPeriodChange($event.value)">
+      <mat-option value="today">Today</mat-option>
+      <mat-option value="yesterday">Yesterday</mat-option>
+      <mat-option value="last_7_days">Last 7 days</mat-option>
+      <mat-option value="last_30_days">Last 30 days</mat-option>
+      <mat-option value="custom">Custom</mat-option>
+    </mat-select>
+  </mat-form-field>
+  @if(period() === 'custom') {
+    <app-date-range-field
+      (startDateChange)="onDateRangeStartChange($event)"
+      (endDateChange)="onDateRangeEndChange($event)"
+    ></app-date-range-field>
+  }
+
+  <mat-form-field class="audit-filter" appearance="fill">
+    <mat-label>User</mat-label>
+    <mat-select (selectionChange)="onUserChange($event.value)">
+      <mat-option [value]="null">All</mat-option>
+      @for(u of users(); track u.id) {
+        <mat-option [value]="u.id">{{u.name}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <app-employee-autocomplete [allStatuses]="true" (selectionChange)="onEmployeeSelected($event)"></app-employee-autocomplete>
+
+  <app-primary-button (click)="onGenerate()">
+    Generate
+  </app-primary-button>
+</app-table-toolbar>
+
+<app-audit-log-table [auditLogs]="auditLogs()" [loading]="loading()" (sortChange)="onSortChange($event)"></app-audit-log-table>
+
+<mat-paginator
+  [length]="totalLogs"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 20, 50]"
+  aria-label="Audit log pagination">
+</mat-paginator>
+
+</mat-card>

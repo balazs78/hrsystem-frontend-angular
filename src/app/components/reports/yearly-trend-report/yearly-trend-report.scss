@@ -1,0 +1,19 @@
+:host {
+	display: block;
+	width: 100%;
+	padding-inline: 8px;
+	box-sizing: border-box;
+}
+
+.chart-scroll {
+	width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.chart-container {
+	position: relative;
+	width: 100%;
+	min-width: 640px;
+	height: 40vh;
+}

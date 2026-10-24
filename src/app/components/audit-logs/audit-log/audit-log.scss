@@ -1,0 +1,9 @@
+@use '../../../../styles/table-common' as table;
+
+@include table.table-shell;
+
+app-audit-log-table {
+  display: block;
+  margin: 0 0 16px;
+}
+

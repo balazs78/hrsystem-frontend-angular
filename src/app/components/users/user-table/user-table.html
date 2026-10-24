@@ -1,0 +1,67 @@
+<mat-card>
+<app-table-toolbar>
+  <app-primary-button (click)="editUser()" *appHasRole="['Admin']">
+    New user
+  </app-primary-button>
+
+  <mat-form-field class="search-filter">
+    <mat-label>Search users</mat-label>
+    <input matInput type="text" (keyup)="applyFilter($event)" />
+  </mat-form-field>
+</app-table-toolbar>
+
+
+
+<app-responsive-table>
+  <table mat-table class="mat-elevation-z8"
+    [dataSource]="dataSource"
+    matSort>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef [disableClear]="true" mat-sort-header>Name</th>
+    <td mat-cell *matCellDef="let user">
+      {{ user.name }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef [disableClear]="true" mat-sort-header>Email</th>
+    <td mat-cell *matCellDef="let user">
+      {{ user.email }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="role">
+    <th mat-header-cell *matHeaderCellDef [disableClear]="true" mat-sort-header>Role</th>
+    <td mat-cell *matCellDef="let user">
+      {{ user.role }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="action" *appHasRole="['Admin']">
+    <th mat-header-cell *matHeaderCellDef>Action</th>
+    <td mat-cell *matCellDef="let user">
+      <button mat-icon-button title="Edit" (click)="editUser(user)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button title="Delete" (click)="deleteUser(user)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let user; columns: displayedColumns"></tr>
+   <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns.length">No records found</td>
+   </tr>
+  </table>
+</app-responsive-table>
+
+<mat-paginator
+  [pageSizeOptions]="[10,20,50]"
+  [pageSize]="10"
+  showFirstLastButtons>
+</mat-paginator>
+
+</mat-card>

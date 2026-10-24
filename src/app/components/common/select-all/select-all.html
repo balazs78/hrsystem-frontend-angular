@@ -1,0 +1,8 @@
+<div class="select-all-container">
+    <mat-checkbox 
+    [checked]="isAllSelected" 
+    [indeterminate]="isPartiallySelected"
+    (change)="toggleSelection($event.checked)">
+    Select All
+    </mat-checkbox>
+</div>

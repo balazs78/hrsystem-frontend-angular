@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>
+  {{ data ? 'Edit' : 'Create' }} Department
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="departmentForm" class="form-container">
+    
+    <!-- 1. Name Field -->
+    <mat-form-field appearance="outline">
+      <mat-label>Department Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g. Backend Engineering">
+      @if (departmentForm.get('name')?.hasError('required')) {
+        <mat-error>
+          Name is required
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- 2. Cost Center Field (With Hint and Regex Error) -->
+    <mat-form-field appearance="outline">
+      <mat-label>Cost Center Code</mat-label>
+      <input matInput 
+             formControlName="costCenterCode" 
+             placeholder="IT-2024"
+             (input)="forceUppercase($event)">
+      <mat-hint>Format: XX-0000 (e.g., HR-1090)</mat-hint>
+      @if (departmentForm.get('costCenterCode')?.hasError('pattern')) {
+        <mat-error>
+          Must follow format <strong>XX-0000</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <app-employee-autocomplete formControlName="manager" label="Head of department"></app-employee-autocomplete>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <app-primary-button (click)="saveDepartment()" [disabled]="departmentForm.invalid">
+    {{ data ? 'Update' : 'Create' }}
+  </app-primary-button>
+</mat-dialog-actions>

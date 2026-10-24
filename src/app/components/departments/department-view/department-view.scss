@@ -1,0 +1,43 @@
+.readonly-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 4px;
+  min-width: 350px;
+}
+
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(0, 0, 0, 0.54); // Standard Material secondary text
+  }
+
+  .value {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.87);
+    font-weight: 400;
+  }
+
+  .code-badge {
+    background: #f0f2f5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', monospace; // Monospaced for codes looks "Senior"
+    font-size: 14px;
+    border: 1px solid #dcdfe3;
+  }
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 10px;
+}

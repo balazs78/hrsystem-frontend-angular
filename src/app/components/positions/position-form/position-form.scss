@@ -1,0 +1,11 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Space between inputs */
+  min-width: 400px; /* Ensure modal isn't too skinny */
+  padding-top: 10px;
+}
+
+mat-form-field {
+  width: 100%;
+}

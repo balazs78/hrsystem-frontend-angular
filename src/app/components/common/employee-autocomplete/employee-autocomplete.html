@@ -1,0 +1,20 @@
+
+<!-- 3. Manager Autocomplete (Scalable Solution) -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ label }}</mat-label>
+      <input type="text"
+             placeholder="Search employee..."
+             matInput
+             [formControl]="inputControl"
+             [matAutocomplete]="auto"
+             (blur)="handleBlur()"
+             >
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onOptionSelected($event)">
+        @for(manager of filteredManagers$ | async; track manager.id) {
+        <mat-option [value]="manager" >
+          {{ manager.fullName }}
+        </mat-option>
+        }
+      </mat-autocomplete>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>

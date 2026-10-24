@@ -1,0 +1,53 @@
+@if(reportData$ | async; as reportData) {
+    <h1>Dashboard</h1>
+<div class="dashboard-wrapper">
+  <mat-grid-list [cols]="kpiCols" [rowHeight]="'120px'" [gutterSize]="'16px'" class="kpi-grid">
+      @for(statistic of reportData.summary; track statistic.title) {
+          <mat-grid-tile>
+              <app-kpi-card class="kpi-card" [statistic]="statistic">
+              </app-kpi-card>
+          </mat-grid-tile>
+      }
+  </mat-grid-list>
+  <div class="tables-grid">
+        <div class="tile-content">
+          <h3>Expiring contracts</h3>
+          <app-expiring-contracts-table [expiringContracts]="reportData.expiringContracts">
+          </app-expiring-contracts-table>
+        </div>
+        <div class="tile-content">
+          <h3>Onboarding employees</h3>
+          <app-onboarding-employees-table [onboardingEmployees]="reportData.onboardingEmployees">
+          </app-onboarding-employees-table>
+        </div>
+  </div>
+  <mat-grid-list [cols]="dataCols" [rowHeight]="'400px'" [gutterSize]="'16px'" class="charts-grid">
+      <mat-grid-tile>
+        <div class="tile-content chart-tile-content">
+          <h3>Manager vs Individual Contributor</h3>
+          @if(reportData.managerVsEmployeeChartData) {
+              <app-manager-vs-employee-chart 
+                  [managerCount]="reportData.managerVsEmployeeChartData.managerCount" 
+                  [individualContributorCount]="reportData.managerVsEmployeeChartData.individualContributorCount">
+              </app-manager-vs-employee-chart>
+          }
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="tile-content chart-tile-content">
+          <h3>Employee vs contractor</h3>
+          @if(reportData.employeeTypeChartData) {
+              <app-employment-type-chart 
+                  [employeeCount]="reportData.employeeTypeChartData.employeeCount" 
+                  [contractorCount]="reportData.employeeTypeChartData.contractorCount">
+              </app-employment-type-chart>
+          }
+        </div>
+      </mat-grid-tile>
+  </mat-grid-list>
+</div>
+} @else if (error) {
+    <div class="error-message">
+        {{ error }}
+    </div>
+}

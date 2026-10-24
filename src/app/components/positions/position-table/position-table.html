@@ -1,0 +1,57 @@
+<mat-card>
+<app-table-toolbar>
+    <app-primary-button *appHasRole="['Admin', 'HR Manager']" (click)="editPosition()">
+    New position
+    </app-primary-button>
+
+    <mat-form-field class="search-filter">
+        <mat-label>Search positions</mat-label>
+        <input matInput type="text" (keyup)="applyFilter($event)" />
+    </mat-form-field>
+</app-table-toolbar>
+
+<app-responsive-table>
+    <table mat-table class="mat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="title" matSortDirection="asc" matSortDisableClear>
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef [disableClear]="true" mat-sort-header>Title</th>
+            <td mat-cell *matCellDef="let position">{{ position.title }}</td>
+        </ng-container>
+        <ng-container matColumnDef="salaryGrade">
+            <th mat-header-cell *matHeaderCellDef [disableClear]="true" mat-sort-header>Salary Grade</th>
+            <td mat-cell *matCellDef="let position">{{ position.salaryGrade }}</td>
+        </ng-container>
+        <ng-container matColumnDef="headcount">
+            <th mat-header-cell *matHeaderCellDef [disableClear]="true" mat-sort-header>Headcount</th>
+            <td mat-cell *matCellDef="let position">{{ position.headcount }}</td>
+        </ng-container>     
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let position">
+                <button *appHasRole="['Admin', 'HR Manager']" mat-icon-button title="Edit" (click)="editPosition(position)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button *appHasRole="['Admin', 'HR Manager']" mat-icon-button title="Delete" [disabled]="position.headcount != 0" (click)="deletePosition(position)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button *appHasRole="['Manager', 'Auditor']" mat-icon-button title="View" (click)="viewPosition(position)">
+                    <mat-icon>visibility</mat-icon>
+                </button>
+            </td>
+        </ng-container>        
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let position;columns:displayedColumns"></tr>
+         <tr *matNoDataRow>
+            <td [attr.colspan]="displayedColumns.length">No records found</td>
+        </tr>
+            </table>
+        </app-responsive-table>
+
+
+<mat-paginator
+  [pageSizeOptions]="[10,20,50]"
+  [pageSize]="10"
+  showFirstLastButtons>
+</mat-paginator>
+
+</mat-card>

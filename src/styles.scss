@@ -1,0 +1,150 @@
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  --toolbar-background: #1f3a5f;
+  --toolbar-foreground: #f4f7fb;
+  --menu-background: #f5f5f5;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light light` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
+
+html,
+body,
+app-root {
+  min-height: 100%;
+  height: 100%;
+}
+
+/* Make dropdown menus use the full available viewport height instead of shrinking to the page content height */
+.cdk-overlay-pane .mat-mdc-menu-panel,
+.cdk-overlay-pane.mat-mdc-menu-panel {
+  max-height: calc(100dvh - 24px) !important;
+  height: auto !important;
+}
+
+.cdk-overlay-pane .mat-mdc-menu-content {
+  overflow-y: auto;
+  background-color: var(--menu-background);
+}
+
+.cdk-overlay-pane .profile-menu.mat-mdc-menu-panel {
+  --mat-menu-container-color: var(--toolbar-background);
+  background-color: var(--toolbar-background);
+}
+
+/* Global Snackbar Styles */
+.toast-success {
+  --mdc-snackbar-container-color: #2e7d32 !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+  --mat-snack-bar-button-color: white !important;
+  
+  /* Custom styling for older Material versions if needed: */
+  background-color: #2e7d32 !important;
+  color: white !important;
+}
+.toast-success .mdc-snackbar__surface {
+  background-color: #2e7d32 !important;
+}
+.toast-error {
+  --mdc-snackbar-container-color: #d32f2f !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+  --mat-snack-bar-button-color: white !important;
+
+  background-color: #d32f2f !important;
+  color: white !important;
+}
+.toast-error .mdc-snackbar__surface {
+  background-color: #d32f2f !important;
+}
+
+/* Shared table toolbar and search field styling */
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px;
+  gap: 16px;
+}
+
+.table-toolbar button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-field {
+  width: 280px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-field:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.15);
+}
+
+.search-field::placeholder {
+  color: #757575;
+}
+
+.mat-mdc-form-field {
+  .mat-mdc-text-field-wrapper {
+    background-color: white !important;
+    border-radius: 4px;
+  }
+  .mdc-text-field--filled {
+    border: 1px solid black;
+  }
+  .mat-mdc-select-panel, 
+  .mat-mdc-option.mat-mdc-option-active.mdc-list-item,
+  .mat-mdc-autocomplete-panel {
+    background-color: white !important;
+  }
+}
+
+.multi-select-filter .mdc-line-ripple,
+.search-filter .mdc-line-ripple,
+.audit-filter .mdc-line-ripple {
+  display: none;
+}
+
+h1 {
+  text-align: center;
+}
